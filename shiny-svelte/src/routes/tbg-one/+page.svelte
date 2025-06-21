@@ -16,7 +16,7 @@
 		gold = await response.json();
 	}
 	async function getDoubleGold() {
-		const response = await fetch(pathState.backendDoubleGold);
+		const response = await fetch(pathState.backendDoubleGold, { method: 'POST' });
 		gold = await response.json();
 	}
 </script>
