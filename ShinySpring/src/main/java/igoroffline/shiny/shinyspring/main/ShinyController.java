@@ -6,14 +6,21 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
+@CrossOrigin(origins = "${shiny.path.frontend-base}")
 @RestController
 public class ShinyController {
 
     @GetMapping
-    @CrossOrigin(origins = "${shiny.path.frontend-base}")
     public Gold getGold() {
         final var gold = new Gold(50);
         log.info("getGold= {}", gold);
+        return gold;
+    }
+
+    @GetMapping("/double-gold")
+    public Gold getDoubleGold() {
+        final var gold = new Gold(100);
+        log.info("getDoubleGold= {}", gold);
         return gold;
     }
 }
