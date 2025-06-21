@@ -4,7 +4,7 @@
 	let gold = $state();
 
 	async function getGold() {
-		const response = await fetch(pathState.base);
+		const response = await fetch(pathState.backendBase);
 		gold = await response.json();
 	}
 </script>

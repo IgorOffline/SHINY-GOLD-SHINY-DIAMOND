@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShinyController {
 
     @GetMapping
-    @CrossOrigin(origins = "http://localhost:5173")
+    @CrossOrigin(origins = "${shiny.path.frontend-base}")
     public Gold getGold() {
         final var gold = new Gold(50);
         log.info("getGold= {}", gold);

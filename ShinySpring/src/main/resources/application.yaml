@@ -1,3 +1,6 @@
 spring:
   application:
     name: ShinySpring
+shiny:
+  path:
+    frontend-base: "http://localhost:5173"
