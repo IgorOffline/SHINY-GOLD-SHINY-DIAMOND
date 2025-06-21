@@ -1,0 +1,59 @@
+buildscript {
+	dependencies {
+		classpath 'com.palantir.javaformat:gradle-palantir-java-format:2.68.0'
+		classpath 'com.diffplug.spotless:spotless-plugin-gradle:6.25.0'
+	}
+}
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.5.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'com.palantir.java-format' version '2.68.0'
+	id 'com.diffplug.spotless' version '6.25.0'
+}
+
+group = 'igoroffline.shiny'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+spotless {
+	java {
+		target 'src/main/java/**/*.java', 'src/main/test/**/*.java'
+		removeUnusedImports()
+		importOrder ''
+		trimTrailingWhitespace()
+		indentWithSpaces 4
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+allprojects {
+	apply plugin: 'com.palantir.java-format'
+}
