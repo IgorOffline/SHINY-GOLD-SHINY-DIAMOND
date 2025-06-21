@@ -1,11 +1,13 @@
 <script>
+	import { pathState } from '$lib/path.svelte.js';
+
 	let gold = $state();
 
 	async function getGold() {
-		const response = await fetch('http://localhost:8080/');
+		const response = await fetch(pathState.base);
 		gold = await response.json();
 	}
 </script>
 
-<p>Turn Based Game: One</p>
+<p>Turn Based Game: One (2)</p>
 <button onclick={getGold}>Get gold</button>
