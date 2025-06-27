@@ -1,9 +1,13 @@
 package igoroffline.shiny.shinyspring.main;
 
-public enum SemaphoreColor {
-    RED, YELLOW, GREEN;
+import java.util.Random;
 
-    public static SemaphoreColor getSemaphoreColor(int index) {
-        return values()[index];
+public enum SemaphoreColor {
+    RED,
+    YELLOW,
+    GREEN;
+
+    public static SemaphoreColor getSwapYellowToOther(Random random) {
+        return random.nextBoolean() ? SemaphoreColor.GREEN : SemaphoreColor.RED;
     }
 }

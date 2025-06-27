@@ -9,21 +9,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class SemaphoreTest {
 
-    private final Semaphore semaphore = new Semaphore();
-
     @Test
-    void testSemaphore() {
-        final var indices = new HashSet<Integer>();
+    void testSwapYellowToOther() {
         final var semaphoreColors = new HashSet<SemaphoreColor>();
         final var random = new SecureRandom();
         for (int i = 0; i < 100; i++) {
-            final var index = semaphore.getRandomSemaphoreColorIndex(random);
-            indices.add(index);
-            final var semaphoreColor = SemaphoreColor.getSemaphoreColor(index);
+            final var semaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
             semaphoreColors.add(semaphoreColor);
         }
 
-        assertThat(indices).hasSize(3).contains(0, 1, 2).doesNotContain(-1, 3);
-        assertThat(semaphoreColors).hasSize(3).contains(SemaphoreColor.RED, SemaphoreColor.YELLOW, SemaphoreColor.GREEN);
+        assertThat(semaphoreColors).hasSize(2).contains(SemaphoreColor.RED, SemaphoreColor.GREEN).doesNotContain(SemaphoreColor.YELLOW);
     }
 }
