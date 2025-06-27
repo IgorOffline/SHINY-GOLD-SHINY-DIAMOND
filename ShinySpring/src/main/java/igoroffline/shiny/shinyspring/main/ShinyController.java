@@ -1,6 +1,8 @@
 package igoroffline.shiny.shinyspring.main;
 
 import jakarta.annotation.PostConstruct;
+import java.security.SecureRandom;
+import java.util.Random;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,16 +15,29 @@ import org.springframework.web.bind.annotation.RestController;
 public class ShinyController {
 
     public static final String gold = "GOLD";
+    public static final String semaphoreColor = "SEMAPHORE_COLOR";
+
+    private final Random random;
+
+    public ShinyController() {
+        random = new SecureRandom();
+    }
+
+    public ShinyController(Random random) {
+        this.random = random;
+    }
 
     @PostConstruct
     public void init() {
-        Data.getData().put(gold, new Gold(50));
+        Data.getData().put(gold, new ShinyData(new Gold(50), ShinyType.GOLD));
+        Data.getData().put(semaphoreColor, new ShinyData(SemaphoreColor.YELLOW, ShinyType.SEMAPHORE_COLOR));
     }
 
     @GetMapping
     public Gold getGold() {
         log.info("getGold");
-        final var currentGold = new Gold(Data.getData().get(gold).value());
+        final var currentGoldRaw = Data.getData().get(gold);
+        final var currentGold = Data.getGold(currentGoldRaw);
         log.info("currentGold= {}", currentGold);
         return currentGold;
     }
@@ -30,11 +45,21 @@ public class ShinyController {
     @PostMapping("/double-gold")
     public Gold postDoubleGold() {
         log.info("postDoubleGold");
-        final var data = Data.getData();
-        final var doubleGold = data.get(gold).value() * 2;
+        final var currentGoldRaw = Data.getData().get(gold);
+        final var currentGold = Data.getGold(currentGoldRaw);
+        final var doubleGold = currentGold.value() * 2;
         final var newGold = new Gold(doubleGold);
-        data.put(gold, newGold);
+        Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
         log.info("newGold= {}", newGold);
         return newGold;
+    }
+
+    @GetMapping("/get-semaphore-color")
+    public SemaphoreColorString getSemaphoreColor() {
+        log.info("getSemaphoreColor");
+        final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
+        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
+        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
+        return new SemaphoreColorString(newSemaphoreColorString);
     }
 }

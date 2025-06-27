@@ -6,5 +6,9 @@ import lombok.Getter;
 public class Data {
 
     @Getter
-    private static final ConcurrentHashMap<String, Gold> data = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, ShinyData> data = new ConcurrentHashMap<>();
+
+    public static Gold getGold(ShinyData data) {
+        return (Gold) data.obj();
+    }
 }
