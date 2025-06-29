@@ -34,6 +34,14 @@
 		const response = await fetch(pathState.backendSemaphoreColor);
 		semaphoreColorString = await response.json();
 	}
+	async function betRed() {
+		const response = await fetch(pathState.backendBetRed, { method: 'POST' });
+		semaphoreColorString = await response.json();
+	}
+	async function betGreen() {
+		const response = await fetch(pathState.backendBetGreen, { method: 'POST' });
+		semaphoreColorString = await response.json();
+	}
 </script>
 
 <p>Turn Based Game: One (3)</p>
@@ -46,3 +54,5 @@
 <p>
 	Semaphore color: {semaphoreColorString.value}
 </p>
+<button onclick={betRed}>Bet 100: Red</button>
+<button onclick={betGreen}>Bet 100: Green</button>

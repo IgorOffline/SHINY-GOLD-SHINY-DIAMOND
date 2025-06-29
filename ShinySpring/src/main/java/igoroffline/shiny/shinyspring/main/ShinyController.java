@@ -62,4 +62,22 @@ public class ShinyController {
         log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
         return new SemaphoreColorString(newSemaphoreColorString);
     }
+
+    @PostMapping("/bet-red")
+    public SemaphoreColorString postBetRed() {
+        log.info("postBetRed");
+        final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
+        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
+        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
+        return new SemaphoreColorString(newSemaphoreColorString);
+    }
+
+    @PostMapping("/bet-green")
+    public SemaphoreColorString postBetGreen() {
+        log.info("postBetGreen");
+        final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
+        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
+        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
+        return new SemaphoreColorString(newSemaphoreColorString);
+    }
 }
