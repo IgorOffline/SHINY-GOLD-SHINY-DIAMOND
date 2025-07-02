@@ -35,16 +35,32 @@ public class ShinyController {
 
     @GetMapping
     public Gold getGold() {
-        log.info("getGold");
-        final var currentGoldRaw = Data.getData().get(gold);
-        final var currentGold = Data.getGold(currentGoldRaw);
+        log.info("<GET::GOLD>");
+        final var currentGold = getCurrentGold();
         log.info("currentGold= {}", currentGold);
         return currentGold;
     }
 
+    private Gold getCurrentGold() {
+        final var currentGoldRaw = Data.getData().get(gold);
+        return Data.getGold(currentGoldRaw);
+    }
+
+    private Gold decreaseCurrentGold() {
+        final var currentGoldRaw = Data.getData().get(gold);
+        final var currentGold = Data.getGold(currentGoldRaw);
+        var decreased = currentGold.value() - 50;
+        if (decreased < 0) {
+            decreased = 0;
+        }
+        final var newGold = new Gold(decreased);
+        Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
+        return newGold;
+    }
+
     @PostMapping("/double-gold")
     public Gold postDoubleGold() {
-        log.info("postDoubleGold");
+        log.info("<POST::DOUBLE-GOLD>");
         final var currentGoldRaw = Data.getData().get(gold);
         final var currentGold = Data.getGold(currentGoldRaw);
         final var doubleGold = currentGold.value() * 2;
@@ -54,12 +70,41 @@ public class ShinyController {
         return newGold;
     }
 
-    @GetMapping("/get-semaphore-color")
+    @GetMapping("/semaphore-color")
     public SemaphoreColorString getSemaphoreColor() {
-        log.info("getSemaphoreColor");
+        log.info("<GET::SEMAPHORE-COLOR>");
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
         final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
         log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
         return new SemaphoreColorString(newSemaphoreColorString);
+    }
+
+    @PostMapping("/bet-red")
+    public SemaphoreColorString postBetRed() {
+        log.info("<POST::BET-RED>");
+        final var currentGold = getCurrentGold();
+        if (currentGold.value() < 50) {
+            return new SemaphoreColorString(Messages.NOT_ENOUGH_GOLD);
+        }
+        decreaseCurrentGold();
+        final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
+        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
+        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
+        return new SemaphoreColorString(newSemaphoreColorString);
+    }
+
+    @PostMapping("/bet-green")
+    public SemaphoreColorString postBetGreen() {
+        log.info("<POST::BET-GREEN>");
+        final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
+        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
+        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
+        return new SemaphoreColorString(newSemaphoreColorString);
+    }
+
+    @PostMapping("/reset")
+    private void reset() {
+        log.info("<POST::RESET>");
+        init();
     }
 }
