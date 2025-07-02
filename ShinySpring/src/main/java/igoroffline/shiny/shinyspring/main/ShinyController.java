@@ -29,7 +29,7 @@ public class ShinyController {
 
     @PostConstruct
     public void init() {
-        Data.getData().put(gold, new ShinyData(new Gold(50), ShinyType.GOLD));
+        Data.getData().put(gold, new ShinyData(new Gold(Magic.DEFAULT_GOLD_AMOUNT), ShinyType.GOLD));
         Data.getData().put(semaphoreColor, new ShinyData(SemaphoreColor.YELLOW, ShinyType.SEMAPHORE_COLOR));
     }
 
@@ -49,9 +49,9 @@ public class ShinyController {
     private Gold decreaseCurrentGold() {
         final var currentGoldRaw = Data.getData().get(gold);
         final var currentGold = Data.getGold(currentGoldRaw);
-        var decreased = currentGold.value() - 50;
-        if (decreased < 0) {
-            decreased = 0;
+        var decreased = currentGold.value() - Magic.DEFAULT_GOLD_AMOUNT;
+        if (decreased < Magic.LOWEST_POSSIBLE_GOLD_AMOUNT) {
+            decreased = Magic.LOWEST_POSSIBLE_GOLD_AMOUNT;
         }
         final var newGold = new Gold(decreased);
         Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
@@ -83,8 +83,8 @@ public class ShinyController {
     public SemaphoreColorString postBetRed() {
         log.info("<POST::BET-RED>");
         final var currentGold = getCurrentGold();
-        if (currentGold.value() < 50) {
-            return new SemaphoreColorString(Messages.NOT_ENOUGH_GOLD);
+        if (currentGold.value() < Magic.DEFAULT_GOLD_AMOUNT) {
+            return new SemaphoreColorString(Magic.NOT_ENOUGH_GOLD);
         }
         decreaseCurrentGold();
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
@@ -96,6 +96,11 @@ public class ShinyController {
     @PostMapping("/bet-green")
     public SemaphoreColorString postBetGreen() {
         log.info("<POST::BET-GREEN>");
+        final var currentGold = getCurrentGold();
+        if (currentGold.value() < Magic.DEFAULT_GOLD_AMOUNT) {
+            return new SemaphoreColorString(Magic.NOT_ENOUGH_GOLD);
+        }
+        decreaseCurrentGold();
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
         final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
         log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
