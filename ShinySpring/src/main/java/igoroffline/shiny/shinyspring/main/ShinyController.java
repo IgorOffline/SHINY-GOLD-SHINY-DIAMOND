@@ -35,7 +35,7 @@ public class ShinyController {
 
     @GetMapping
     public Gold getGold() {
-        log.info("getGold");
+        log.info("<GET::GOLD>");
         final var currentGold = getCurrentGold();
         log.info("currentGold= {}", currentGold);
         return currentGold;
@@ -60,7 +60,7 @@ public class ShinyController {
 
     @PostMapping("/double-gold")
     public Gold postDoubleGold() {
-        log.info("postDoubleGold");
+        log.info("<POST::DOUBLE-GOLD>");
         final var currentGoldRaw = Data.getData().get(gold);
         final var currentGold = Data.getGold(currentGoldRaw);
         final var doubleGold = currentGold.value() * 2;
@@ -70,9 +70,9 @@ public class ShinyController {
         return newGold;
     }
 
-    @GetMapping("/get-semaphore-color")
+    @GetMapping("/semaphore-color")
     public SemaphoreColorString getSemaphoreColor() {
-        log.info("getSemaphoreColor");
+        log.info("<GET::SEMAPHORE-COLOR>");
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
         final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
         log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
@@ -81,7 +81,7 @@ public class ShinyController {
 
     @PostMapping("/bet-red")
     public SemaphoreColorString postBetRed() {
-        log.info("postBetRed");
+        log.info("<POST::BET-RED>");
         final var currentGold = getCurrentGold();
         if (currentGold.value() < 50) {
             return new SemaphoreColorString(Messages.NOT_ENOUGH_GOLD);
@@ -95,10 +95,16 @@ public class ShinyController {
 
     @PostMapping("/bet-green")
     public SemaphoreColorString postBetGreen() {
-        log.info("postBetGreen");
+        log.info("<POST::BET-GREEN>");
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
         final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
         log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
         return new SemaphoreColorString(newSemaphoreColorString);
+    }
+
+    @PostMapping("/reset")
+    private void reset() {
+        log.info("<POST::RESET>");
+        init();
     }
 }

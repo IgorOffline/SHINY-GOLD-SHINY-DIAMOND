@@ -43,9 +43,17 @@
 		const response = await fetch(pathState.backendBetGreen, { method: 'POST' });
 		semaphoreColorString = await response.json();
 	}
+	async function reset() {
+		const response = await fetch(pathState.backendReset, { method: 'POST' });
+		await getGold();
+		semaphoreColorString = new SemaphoreColorString('yellow');
+	}
 </script>
 
 <p>Turn Based Game: One (3)</p>
+<p>
+	<button onclick={reset}>Reset</button>
+</p>
 <button onclick={getGold}>Get gold</button>
 <button onclick={getDoubleGold}>Get double gold</button>
 <p>
