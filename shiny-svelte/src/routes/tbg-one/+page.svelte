@@ -37,6 +37,7 @@
 	async function betRed() {
 		const response = await fetch(pathState.backendBetRed, { method: 'POST' });
 		semaphoreColorString = await response.json();
+		await getGold();
 	}
 	async function betGreen() {
 		const response = await fetch(pathState.backendBetGreen, { method: 'POST' });

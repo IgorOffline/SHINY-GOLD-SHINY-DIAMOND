@@ -36,10 +36,26 @@ public class ShinyController {
     @GetMapping
     public Gold getGold() {
         log.info("getGold");
-        final var currentGoldRaw = Data.getData().get(gold);
-        final var currentGold = Data.getGold(currentGoldRaw);
+        final var currentGold = getCurrentGold();
         log.info("currentGold= {}", currentGold);
         return currentGold;
+    }
+
+    private Gold getCurrentGold() {
+        final var currentGoldRaw = Data.getData().get(gold);
+        return Data.getGold(currentGoldRaw);
+    }
+
+    private Gold decreaseCurrentGold() {
+        final var currentGoldRaw = Data.getData().get(gold);
+        final var currentGold = Data.getGold(currentGoldRaw);
+        var decreased = currentGold.value() - 50;
+        if (decreased < 0) {
+            decreased = 0;
+        }
+        final var newGold = new Gold(decreased);
+        Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
+        return newGold;
     }
 
     @PostMapping("/double-gold")
@@ -66,6 +82,11 @@ public class ShinyController {
     @PostMapping("/bet-red")
     public SemaphoreColorString postBetRed() {
         log.info("postBetRed");
+        final var currentGold = getCurrentGold();
+        if (currentGold.value() < 50) {
+            return new SemaphoreColorString(Messages.NOT_ENOUGH_GOLD);
+        }
+        decreaseCurrentGold();
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
         final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
         log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
