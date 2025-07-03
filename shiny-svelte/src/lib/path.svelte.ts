@@ -4,5 +4,6 @@ export const pathState = $state({
 	backendSemaphoreColor: 'http://localhost:8080/semaphore-color',
 	backendBetRed: 'http://localhost:8080/bet-red',
 	backendBetGreen: 'http://localhost:8080/bet-green',
-	backendReset: 'http://localhost:8080/reset'
+	backendReset: 'http://localhost:8080/reset',
+	backendLoseBet: 'http://localhost:8080/lose-bet'
 });

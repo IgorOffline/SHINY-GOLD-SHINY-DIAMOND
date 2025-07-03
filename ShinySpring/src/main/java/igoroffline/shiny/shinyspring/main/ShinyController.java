@@ -41,9 +41,31 @@ public class ShinyController {
         return currentGold;
     }
 
+    @GetMapping("/semaphore-color")
+    public String getSemaphoreColor() {
+        log.info("<GET::SEMAPHORE-COLOR>");
+        final var semaphoreColor = getSemaphoreColorString();
+        log.info("semaphoreColor= {}", semaphoreColor);
+        return semaphoreColor;
+    }
+
+    @PostMapping("/semaphore-color")
+    public SemaphoreColorString postSemaphoreColor() {
+        log.info("<POST::SEMAPHORE-COLOR>");
+        final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
+        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
+        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
+        return new SemaphoreColorString(newSemaphoreColorString);
+    }
+
     private Gold getCurrentGold() {
         final var currentGoldRaw = Data.getData().get(gold);
         return Data.getGold(currentGoldRaw);
+    }
+
+    private String getSemaphoreColorString() {
+        final var currentSemaphoreColorRaw = Data.getData().get(semaphoreColor);
+        return Data.getSemaphoreColor(currentSemaphoreColorRaw).name();
     }
 
     private Gold decreaseCurrentGold() {
@@ -68,15 +90,6 @@ public class ShinyController {
         Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
         log.info("newGold= {}", newGold);
         return newGold;
-    }
-
-    @GetMapping("/semaphore-color")
-    public SemaphoreColorString getSemaphoreColor() {
-        log.info("<GET::SEMAPHORE-COLOR>");
-        final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
-        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
-        return new SemaphoreColorString(newSemaphoreColorString);
     }
 
     @PostMapping("/bet-red")
@@ -111,5 +124,13 @@ public class ShinyController {
     private void reset() {
         log.info("<POST::RESET>");
         init();
+    }
+
+    @PostMapping("/lose-bet")
+    public Gold postLoseBet() {
+        log.info("<POST::LOSE-BET>");
+        final var newGold = decreaseCurrentGold();
+        log.info("newGold= {}", newGold);
+        return newGold;
     }
 }
