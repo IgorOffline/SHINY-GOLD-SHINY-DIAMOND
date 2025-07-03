@@ -11,4 +11,8 @@ public class Data {
     public static Gold getGold(ShinyData data) {
         return (Gold) data.obj();
     }
+
+    public static SemaphoreColor getSemaphoreColor(ShinyData data) {
+        return (SemaphoreColor) data.obj();
+    }
 }

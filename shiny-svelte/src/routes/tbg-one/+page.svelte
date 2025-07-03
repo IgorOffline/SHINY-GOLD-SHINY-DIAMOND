@@ -19,6 +19,8 @@
 		}
 	}
 
+	//const notEnoughGold = 'not-enough-gold';
+
 	let gold = $state(new Gold(0));
 	let semaphoreColorString = $state<SemaphoreColorString>(new SemaphoreColorString('yellow'));
 
@@ -34,6 +36,10 @@
 		const response = await fetch(pathState.backendSemaphoreColor);
 		semaphoreColorString = await response.json();
 	}
+	async function postSemaphoreColor() {
+		const response = await fetch(pathState.backendSemaphoreColor, { method: 'POST' });
+		semaphoreColorString = await response.json();
+	}
 	async function betRed() {
 		const response = await fetch(pathState.backendBetRed, { method: 'POST' });
 		semaphoreColorString = await response.json();
@@ -42,11 +48,20 @@
 	async function betGreen() {
 		const response = await fetch(pathState.backendBetGreen, { method: 'POST' });
 		semaphoreColorString = await response.json();
+		await getGold();
 	}
 	async function reset() {
 		const response = await fetch(pathState.backendReset, { method: 'POST' });
 		await getGold();
 		semaphoreColorString = new SemaphoreColorString('yellow');
+	}
+	async function loseBet() {
+		const response = await fetch(pathState.backendLoseBet, { method: 'POST' });
+		await getGold();
+		semaphoreColorString = new SemaphoreColorString('yellow');
+	}
+	async function refreshUi() {
+		await getGold();
 	}
 </script>
 
@@ -59,9 +74,10 @@
 <p>
 	Gold: {gold.value}
 </p>
-<button onclick={getSemaphoreColor}>Change semaphore color</button>
+<button onclick={postSemaphoreColor}>Change semaphore color</button>
 <p>
 	Semaphore color: {semaphoreColorString.value}
 </p>
 <button onclick={betRed}>Bet 100: Red</button>
 <button onclick={betGreen}>Bet 100: Green</button>
+<button onclick={loseBet}>Lose 50</button>
