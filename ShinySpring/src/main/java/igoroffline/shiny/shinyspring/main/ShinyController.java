@@ -93,31 +93,37 @@ public class ShinyController {
     }
 
     @PostMapping("/bet-red")
-    public SemaphoreColorString postBetRed() {
+    public BetResult postBetRed() {
         log.info("<POST::BET-RED>");
         final var currentGold = getCurrentGold();
         if (currentGold.value() < Magic.DEFAULT_GOLD_AMOUNT) {
-            return new SemaphoreColorString(Magic.NOT_ENOUGH_GOLD);
+            return new BetResult(Magic.NOT_ENOUGH_GOLD, false, currentGold.value());
         }
-        decreaseCurrentGold();
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
-        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
-        return new SemaphoreColorString(newSemaphoreColorString);
+        final var winning = SemaphoreColor.RED;
+        final var losing = SemaphoreColor.GREEN;
+        if (newSemaphoreColor == winning) {
+            return new BetResult(winning.name, true, currentGold.value());
+        }
+
+        return new BetResult(losing.name, false, currentGold.value());
     }
 
     @PostMapping("/bet-green")
-    public SemaphoreColorString postBetGreen() {
+    public BetResult postBetGreen() {
         log.info("<POST::BET-GREEN>");
         final var currentGold = getCurrentGold();
         if (currentGold.value() < Magic.DEFAULT_GOLD_AMOUNT) {
-            return new SemaphoreColorString(Magic.NOT_ENOUGH_GOLD);
+            return new BetResult(Magic.NOT_ENOUGH_GOLD, false, currentGold.value());
         }
-        decreaseCurrentGold();
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
-        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
-        return new SemaphoreColorString(newSemaphoreColorString);
+        final var winning = SemaphoreColor.GREEN;
+        final var losing = SemaphoreColor.RED;
+        if (newSemaphoreColor == winning) {
+            return new BetResult(winning.name, true, currentGold.value());
+        }
+
+        return new BetResult(losing.name, false, currentGold.value());
     }
 
     @PostMapping("/reset")
