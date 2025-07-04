@@ -35,6 +35,7 @@
 
 	let gold = $state(new Gold(0));
 	let semaphoreColorString = $state<SemaphoreColorString>(new SemaphoreColorString('yellow'));
+	let betStatus = $state('Bet: Won/Lost?');
 
 	async function getGold() {
 		const response = await fetch(pathState.backendBase);
@@ -58,6 +59,7 @@
 		console.log(betResult);
 		gold = new Gold(betResult.gold);
 		semaphoreColorString = new SemaphoreColorString(betResult.color);
+		betStatus = '' + betResult.win;
 	}
 	async function betGreen() {
 		const response = await fetch(pathState.backendBetGreen, { method: 'POST' });
@@ -65,6 +67,7 @@
 		console.log(betResult);
 		gold = new Gold(betResult.gold);
 		semaphoreColorString = new SemaphoreColorString(betResult.color);
+		betStatus = '' + betResult.win;
 	}
 	async function reset() {
 		const response = await fetch(pathState.backendReset, { method: 'POST' });
@@ -97,3 +100,4 @@
 <button onclick={betRed}>Bet 100: Red</button>
 <button onclick={betGreen}>Bet 100: Green</button>
 <button onclick={loseBet}>Lose 50</button>
+<div>{betStatus}</div>
