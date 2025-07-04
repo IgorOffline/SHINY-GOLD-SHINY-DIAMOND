@@ -100,11 +100,13 @@ public class ShinyController {
             return new BetResult(Magic.NOT_ENOUGH_GOLD, false, currentGold.value());
         }
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        if (newSemaphoreColor == SemaphoreColor.RED) {
-            return new BetResult("red", true, currentGold.value());
+        final var winning = SemaphoreColor.RED;
+        final var losing = SemaphoreColor.GREEN;
+        if (newSemaphoreColor == winning) {
+            return new BetResult(winning.name, true, currentGold.value());
         }
 
-        return new BetResult("green", false, currentGold.value());
+        return new BetResult(losing.name, false, currentGold.value());
     }
 
     @PostMapping("/bet-green")
@@ -115,11 +117,13 @@ public class ShinyController {
             return new BetResult(Magic.NOT_ENOUGH_GOLD, false, currentGold.value());
         }
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        if (newSemaphoreColor == SemaphoreColor.GREEN) {
-            return new BetResult("green", true, currentGold.value());
+        final var winning = SemaphoreColor.GREEN;
+        final var losing = SemaphoreColor.RED;
+        if (newSemaphoreColor == winning) {
+            return new BetResult(winning.name, true, currentGold.value());
         }
 
-        return new BetResult("red", false, currentGold.value());
+        return new BetResult(losing.name, false, currentGold.value());
     }
 
     @PostMapping("/reset")
