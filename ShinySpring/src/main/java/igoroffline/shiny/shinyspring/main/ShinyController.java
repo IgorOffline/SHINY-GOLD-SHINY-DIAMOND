@@ -93,31 +93,33 @@ public class ShinyController {
     }
 
     @PostMapping("/bet-red")
-    public SemaphoreColorString postBetRed() {
+    public BetResult postBetRed() {
         log.info("<POST::BET-RED>");
         final var currentGold = getCurrentGold();
         if (currentGold.value() < Magic.DEFAULT_GOLD_AMOUNT) {
-            return new SemaphoreColorString(Magic.NOT_ENOUGH_GOLD);
+            return new BetResult(Magic.NOT_ENOUGH_GOLD, false, currentGold.value());
         }
-        decreaseCurrentGold();
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
-        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
-        return new SemaphoreColorString(newSemaphoreColorString);
+        if (newSemaphoreColor == SemaphoreColor.RED) {
+            return new BetResult("red", true, currentGold.value());
+        }
+
+        return new BetResult("green", false, currentGold.value());
     }
 
     @PostMapping("/bet-green")
-    public SemaphoreColorString postBetGreen() {
+    public BetResult postBetGreen() {
         log.info("<POST::BET-GREEN>");
         final var currentGold = getCurrentGold();
         if (currentGold.value() < Magic.DEFAULT_GOLD_AMOUNT) {
-            return new SemaphoreColorString(Magic.NOT_ENOUGH_GOLD);
+            return new BetResult(Magic.NOT_ENOUGH_GOLD, false, currentGold.value());
         }
-        decreaseCurrentGold();
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
-        log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
-        return new SemaphoreColorString(newSemaphoreColorString);
+        if (newSemaphoreColor == SemaphoreColor.GREEN) {
+            return new BetResult("green", true, currentGold.value());
+        }
+
+        return new BetResult("red", false, currentGold.value());
     }
 
     @PostMapping("/reset")
