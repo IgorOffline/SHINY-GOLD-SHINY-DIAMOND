@@ -53,7 +53,8 @@ public class ShinyController {
     public SemaphoreColorString postSemaphoreColor() {
         log.info("<POST::SEMAPHORE-COLOR>");
         final var newSemaphoreColor = SemaphoreColor.getSwapYellowToOther(random);
-        final var newSemaphoreColorString = newSemaphoreColor == SemaphoreColor.RED ? "red" : "green";
+        final var newSemaphoreColorString =
+                newSemaphoreColor == SemaphoreColor.RED ? SemaphoreColor.RED.name : SemaphoreColor.GREEN.name;
         log.info("newSemaphoreColorString= {}", newSemaphoreColorString);
         return new SemaphoreColorString(newSemaphoreColorString);
     }
@@ -103,10 +104,21 @@ public class ShinyController {
         final var winning = SemaphoreColor.RED;
         final var losing = SemaphoreColor.GREEN;
         if (newSemaphoreColor == winning) {
-            return new BetResult(winning.name, true, currentGold.value());
+            final var winningGold = currentGold.value() + Magic.DEFAULT_GOLD_AMOUNT;
+            final var newGold = new Gold(winningGold);
+            Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
+
+            return new BetResult(winning.name, true, newGold.value());
         }
 
-        return new BetResult(losing.name, false, currentGold.value());
+        final var loseGold = currentGold.value() - Magic.BET_LOSS_GOLD_AMOUNT;
+        var newGold = new Gold(loseGold);
+        if (newGold.value() < Magic.LOWEST_POSSIBLE_GOLD_AMOUNT) {
+            newGold = new Gold(Magic.LOWEST_POSSIBLE_GOLD_AMOUNT);
+        }
+        Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
+
+        return new BetResult(losing.name, false, newGold.value());
     }
 
     @PostMapping("/bet-green")
@@ -120,10 +132,18 @@ public class ShinyController {
         final var winning = SemaphoreColor.GREEN;
         final var losing = SemaphoreColor.RED;
         if (newSemaphoreColor == winning) {
-            return new BetResult(winning.name, true, currentGold.value());
+            final var winningGold = currentGold.value() + Magic.DEFAULT_GOLD_AMOUNT;
+            final var newGold = new Gold(winningGold);
+            Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
+
+            return new BetResult(winning.name, true, newGold.value());
         }
 
-        return new BetResult(losing.name, false, currentGold.value());
+        final var lossGold = currentGold.value() - Magic.BET_LOSS_GOLD_AMOUNT;
+        final var newGold = new Gold(lossGold);
+        Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
+
+        return new BetResult(losing.name, false, newGold.value());
     }
 
     @PostMapping("/reset")
