@@ -69,18 +69,6 @@ public class ShinyController {
         return Data.getSemaphoreColor(currentSemaphoreColorRaw).name();
     }
 
-    private Gold decreaseCurrentGold() {
-        final var currentGoldRaw = Data.getData().get(gold);
-        final var currentGold = Data.getGold(currentGoldRaw);
-        var decreased = currentGold.value() - Magic.DEFAULT_GOLD_AMOUNT;
-        if (decreased < Magic.LOWEST_POSSIBLE_GOLD_AMOUNT) {
-            decreased = Magic.LOWEST_POSSIBLE_GOLD_AMOUNT;
-        }
-        final var newGold = new Gold(decreased);
-        Data.getData().put(gold, new ShinyData(newGold, ShinyType.GOLD));
-        return newGold;
-    }
-
     @PostMapping("/double-gold")
     public Gold postDoubleGold() {
         log.info("<POST::DOUBLE-GOLD>");
@@ -155,8 +143,8 @@ public class ShinyController {
     @PostMapping("/lose-bet")
     public Gold postLoseBet() {
         log.info("<POST::LOSE-BET>");
-        final var newGold = decreaseCurrentGold();
+        final var newGold = Accounting.reduceGold(Data.getData().get(gold), gold, Magic.DEFAULT_GOLD_AMOUNT);
         log.info("newGold= {}", newGold);
-        return newGold;
+        return newGold.gold();
     }
 }
